@@ -1,0 +1,60 @@
+{
+  "name": "tonoa",
+  "version": "1.0.0",
+  "description": "A tiny node.js cloud function for sending emails using AWS SES, Lambda & API Gateway services.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naikipl/tonoa.git"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "node",
+    "email",
+    "send",
+    "template",
+    "mustache"
+  ],
+  "author": "Naiki Pearl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naikipl/tonoa/issues"
+  },
+  "homepage": "https://github.com/naikipl/tonoa#readme",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-flow": "^7.0.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^8.0.2",
+    "jest": "^23.5.0",
+    "json-loader": "^0.5.7",
+    "webpack": "^4.17.2",
+    "webpack-command": "^0.4.1"
+  },
+  "dependencies": {
+    "qs": "^6.5.2"
+  },
+  "jest": {
+    "transform": {"^.+\\.js$": "babel-jest"},
+    "moduleFileExtensions": ["js"],
+    "modulePaths": ["src"],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"],
+    "plugins": [
+      "@babel/plugin-syntax-flow",
+      "@babel/plugin-transform-flow-strip-types"
+    ]
+  }
+}
