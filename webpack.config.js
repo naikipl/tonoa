@@ -1,15 +1,20 @@
 var path = require("path");
-var fs = require("fs");
 
 module.exports = {
-  entry: './index.js',
+  entry: './src/index.js',
   output: {
     path: path.join(__dirname, "dist"),
     library: "[name]",
     libraryTarget: "commonjs2",
-    filename: "[name].js"
+    filename: "index.js"
   },
   target: "node",
+  resolve: {
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, "src")
+    ]
+  },
   module: {
     rules: [
       {
@@ -25,6 +30,7 @@ module.exports = {
       },
       {
         test: /\.json$/,
+        exclude: /node_modules/,
         use: 'json'
       }
     ]

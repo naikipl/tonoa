@@ -1,12 +1,22 @@
-import QueryString from 'qs'
+import qs from 'qs'
 import SendEmail from 'SendEmail'
+import Redirect from 'Redirect'
+import Respond from 'Respond'
+import Validate from 'Validate'
 
 export default (event, _, callback) => {
-  // App.params = QueryString.parse(event.body);
-  // App.respond = callback;
-  // App.host = event.stageVariables.host;
-  // App.info_email = event.stageVariables.info_email;
+  let body = qs.parse(event.body)
 
-  let data = event
-  SendEmail(data, callback)
+  let {valid, errors} = Validate(body)
+
+  if (valid) {
+    let config = {}
+    if (event.stageVariables) { config.region = event.stageVariables.region }
+    SendEmail(body, config).catch(error => {
+      callback(null, Respond(500, error.message))
+    })
+    callback(null, Redirect(body.redirect))
+  } else {
+    callback(null, Respond(400, errors))
+  }
 }

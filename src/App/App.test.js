@@ -1,42 +1,21 @@
 import App from 'App'
-import event from 'gatewayEventMock'
 import SendEmail from 'SendEmail'
+import Validate from 'Validate'
 
 jest.mock('SendEmail')
+jest.mock('Validate')
 
 describe('App', () => {
-  it('receives event, context and callback args', () => {
-    let exec = () => App(event, {}, () => {})
-    expect(exec).not.toThrow()
+  beforeAll(() => {
+    console = {
+      log: () => {},
+      error: () => {},
+      info: () => {}
+    }
   })
 
-  it('sends an email using data from event', () => {
-    App({event}, {}, () => {})
-    expect(SendEmail).toHaveBeenCalledWith({
-      bccAddresses: [],
-      ccAddresses: [],
-      toAddresses: [],
-      replyToAddresses: [],
-      fromAddress: "",
-      fromName: "",
-      bounceAddress: "",
-      subject: "",
-      html: "",
-      txt: ""
-    }, expect.anything())
-  })
-
-  it('responds with a redirect when data is valid', () => {
-    let spy = jest.fn()
-    App(event, {}, spy)
-    expect(spy).toHaveBeenCalledWith(null, {
-      headers: {"Access-Control-Allow-Origin": "*"},
-      Location: "redirect/url",
-      statusCode: 301
-    })
-  })
-
-  it('responds with bad request when data is invalid', () => {
+  it('with invalid event responds with a bad request', () => {
+    Validate.mockReturnValueOnce({valid: false})
     let spy = jest.fn()
     App({}, {}, spy)
     expect(spy).toHaveBeenCalledWith(null, {
@@ -45,8 +24,52 @@ describe('App', () => {
     })
   })
 
-  it('prints an error when SES fails', () => {
-    let spy = console.log = jest.fn()
-    expect(spy).toHaveBeenCalledWith("RESPONSE", "500:ses failed")
+  describe('with valid event', () => {
+    let ev
+
+    beforeEach(() => {
+      Validate.mockReturnValueOnce({valid: true})
+      SendEmail.mockResolvedValueOnce()
+      ev = {body: "to%5B%5D=t%40e.com&from=t%40e.com&redirect=re%2Fdirect&subject=Sub"}
+    })
+
+    it('sends an email with decoded data', () => {
+      App(ev, {}, () => {})
+      expect(SendEmail).toHaveBeenCalledWith({
+        to: ['t@e.com'],
+        from: 't@e.com',
+        subject: "Sub",
+        redirect: "re/direct"
+      }, expect.anything())
+    })
+
+    it('configures with stageVariables', () => {
+      ev = {body: "", stageVariables: {region: 'us-east-2'}}
+      App(ev, {}, () => {})
+      expect(SendEmail).toHaveBeenCalledWith(expect.anything(), {region: 'us-east-2'})
+    })
+
+    it('responds with a redirect', () => {
+      let spy = jest.fn()
+      App(ev, {}, spy)
+      expect(spy).toHaveBeenCalledWith(null, {
+        headers: {
+          Location: "re/direct",
+          "Access-Control-Allow-Origin": "*"
+        },
+        statusCode: 301
+      })
+    })
+  })
+
+  it('responds with an exception when sending mail fails', async () => {
+    Validate.mockReturnValueOnce({valid: true})
+    SendEmail.mockRejectedValueOnce({message: "exception"})
+    let spy = jest.fn()
+    await App({}, {}, spy)
+    expect(spy.mock.calls[1][1]).toEqual({
+      headers: {"Access-Control-Allow-Origin": "*"},
+      statusCode: 500
+    })
   })
 })

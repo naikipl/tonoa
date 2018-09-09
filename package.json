@@ -39,19 +39,28 @@
     "webpack-command": "^0.4.1"
   },
   "dependencies": {
+    "aws-sdk": "^2.311.0",
     "qs": "^6.5.2"
   },
   "jest": {
-    "transform": {"^.+\\.js$": "babel-jest"},
-    "moduleFileExtensions": ["js"],
-    "modulePaths": ["src"],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "modulePaths": [
+      "src"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
   "babel": {
-    "presets": ["@babel/preset-env"],
+    "presets": [
+      "@babel/preset-env"
+    ],
     "plugins": [
       "@babel/plugin-syntax-flow",
       "@babel/plugin-transform-flow-strip-types"

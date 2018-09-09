@@ -1,10 +1,10 @@
-var app = require("../dist/main.js");
+var index = require("../dist/index.js");
 
-var lambdaContext = {
-  succeed: function succeed(results) {
-    console.log(results);
-    process.exit(0);
+const event = {
+  "body": "redirect=http://google.com&to[]=info@example.com&from=info@example.com&subject=Test Email&html=<body></body>&text=Hi",
+  "stageVariables": {
+    "region": "us-west-2"
   }
-};
+}
 
-app.hello({name: "bob"}, lambdaContext);
+index.handler(event, {}, console.log)
