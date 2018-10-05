@@ -1,6 +1,11 @@
 var path = require("path");
+var fs = require('fs');
+
+var packageJSON = JSON.parse(fs.readFileSync('package.json'))
 
 module.exports = {
+  mode: 'production',
+  externals: Object.keys(packageJSON.devDependencies),
   entry: './src/index.js',
   output: {
     path: path.join(__dirname, "dist"),

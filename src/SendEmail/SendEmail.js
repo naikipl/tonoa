@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk'
 
-export default (body, config={}) => {
+export default (body) => {
   let email = {
     Source: body.from,
     Destination: {
@@ -20,7 +20,7 @@ export default (body, config={}) => {
   }
 
   return new Promise((resolve, reject) => {
-    let ses = new AWS.SES(config)
+    let ses = new AWS.SES({region: "us-west-2"})
     ses.sendEmail(email, (error, data) => {
       (error) ? reject(error) : resolve(data)
     })

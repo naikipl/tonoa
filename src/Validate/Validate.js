@@ -1,4 +1,4 @@
-const REQUIRED_DATA = ['to', 'from', 'subject', 'html', 'text', 'redirect']
+const REQUIRED_DATA = ['to', 'from', 'subject', 'html', 'text']
 
 const DATA_TYPES = {
   to: 'string[]',
